@@ -11,8 +11,8 @@ from sklearn.metrics import mean_squared_error, r2_score
 warnings.filterwarnings("ignore")
 
 ROLL_NUMBER = "IMT2024036"
-DATA_DIRECTORY = "."
-OUTPUT_DIRECTORY = "."
+DATA_DIRECTORY = "data"
+OUTPUT_DIRECTORY = "output"
 
 CONFIG = {
     1: {"degrees": range(1, 11)},
@@ -145,6 +145,7 @@ def process_dataset(dataset_id: int, roll_number: str, data_directory: str, outp
     pd.DataFrame({"y": test_predictions}).to_csv(f"{output_directory}/{roll_number}_pred_var{dataset_id}.csv", index=False)
 
 def main():
+    os.makedirs(OUTPUT_DIRECTORY, exist_ok=True)
     for dataset_id in (1, 2):
         process_dataset(dataset_id, ROLL_NUMBER, DATA_DIRECTORY, OUTPUT_DIRECTORY)
 
