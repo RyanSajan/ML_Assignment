@@ -140,6 +140,14 @@ def process_dataset(dataset_id: int, roll_number: str, data_directory: str, outp
     
     final_pipeline = create_regression_pipeline(best_row.model, int(best_row.degree), best_row.alpha, best_row.l1_ratio)
     final_pipeline.fit(X_train, y_train)
+
+    poly_step = final_pipeline.named_steps['polynomialfeatures']
+    feature_names = poly_step.get_feature_names_out(feature_columns)
+
+    coefficients = final_pipeline[-1].coef_
+    selected_features = feature_names[np.abs(coefficients) > 1e-5]
+    
+    print(f"Total features selected: {len(selected_features)} out of {len(feature_names)}")
     test_predictions = final_pipeline.predict(X_test)
     
     pd.DataFrame({"y": test_predictions}).to_csv(f"{output_directory}/{roll_number}_pred_var{dataset_id}.csv", index=False)
